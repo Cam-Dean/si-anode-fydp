@@ -1,5 +1,13 @@
 function [LAMn, newAnodeElyteV] = anodeLoss(cEff, cFull, anodeElyteV)
 
+    % This function calculates anode loss due electrolyte dryout. It
+    % calculates the volume of electrolyte lost based on the moles of
+    % electrons consumed by SEI. Subsequently, the anode loss is assumed to
+    % be equal to the ratio of electrolyte lost. This approximation assumes
+    % that electrolyte is lost in a way that disconnects each active 
+    % particle from the conductive matrix individually, rather than
+    % electrically isolating many particles at once.
+
     % Define Constants
     F = 96485; % C/mol
     mmC = 12.0107; % g/mol
@@ -11,10 +19,12 @@ function [LAMn, newAnodeElyteV] = anodeLoss(cEff, cFull, anodeElyteV)
     densityDMC = 1.07; % g/cm^3
     densitySEILayer = inf;
     
-    fractECReaction = 0.5;
+    % Fraction of SEI reaction that consumes ethylene carbonate
+    fractECReaction = 0.5; 
+    % Fraction of SEI reaction that consumes dimethyl carbonate
     fractDMCReaction = 0.5;
     
-    % Calculate deltaV
+    % Calculate deltaV (volume of Elyte lost)
     molReactedElectrons = (1-cEff)*cFull/F;
 
     deltaVEC = fractECReaction*(molReactedElectrons*mmEC/densityEC - ...
